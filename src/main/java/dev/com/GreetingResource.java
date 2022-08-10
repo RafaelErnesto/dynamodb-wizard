@@ -31,7 +31,7 @@ public class GreetingResource {
 
         Item item = new Item()
                 .withPrimaryKey("id", "3")
-                .withString("cpf", "04928416163")
+                .withString("cpf", "00000000000")
                 .withString("orderDate", "2022-08-11");
         return table.putItem(item);
     }
@@ -60,7 +60,7 @@ public class GreetingResource {
         QuerySpec spec = new QuerySpec()
                 .withKeyConditionExpression("cpf = :v_cpf")
                 .withValueMap(new ValueMap()
-                        .withString(":v_cpf","04928416163"));
+                        .withString(":v_cpf","00000000000"));
 
 
         ItemCollection<QueryOutcome> items = index.query(spec);
