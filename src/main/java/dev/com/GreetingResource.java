@@ -1,7 +1,6 @@
 package dev.com;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.*;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
@@ -18,14 +17,14 @@ import java.util.Iterator;
 @Path("/dynamo-wizard")
 public class GreetingResource {
 
-    @Inject
-    AmazonDynamoDBClient client;
+   // @Inject
+   // AmazonDynamoDBClient client;
 
     @POST
     @Path("/insert")
     @Produces(MediaType.TEXT_PLAIN)
     public PutItemOutcome insert() {
-        //AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
+        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
         DynamoDB dynamoDB = new DynamoDB(client);
         Table table = dynamoDB.getTable("users-table");
 
@@ -40,7 +39,7 @@ public class GreetingResource {
     @Path("/item-by-pk")
     @Produces(MediaType.APPLICATION_JSON)
     public Item getItem() {
-       // AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
+        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
         DynamoDB dynamoDB = new DynamoDB(client);
         Table table = dynamoDB.getTable("users-table");
 
@@ -52,7 +51,7 @@ public class GreetingResource {
     @Path("/item-by-index")
     @Produces(MediaType.APPLICATION_JSON)
     public void getItemByIndex() {
-        //AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
+        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
         DynamoDB dynamoDB = new DynamoDB(client);
         Table table = dynamoDB.getTable("users-table");
         Index index = table.getIndex("cpf-orderDate-index");
@@ -60,7 +59,9 @@ public class GreetingResource {
         QuerySpec spec = new QuerySpec()
                 .withKeyConditionExpression("cpf = :v_cpf")
                 .withValueMap(new ValueMap()
-                        .withString(":v_cpf","04928416163"));
+                        .withString(":v_cpf","04928416163"))
+                .withScanIndexForward(false);
+
 
 
         ItemCollection<QueryOutcome> items = index.query(spec);
@@ -68,6 +69,5 @@ public class GreetingResource {
         while(iter.hasNext()) {
             System.out.println(iter.next().toJSONPretty());
         }
-        //return iter.next();
     }
 }
